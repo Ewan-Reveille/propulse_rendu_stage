@@ -8,7 +8,6 @@ output
 fr_core_news_sm
 __pycache__
 *.zip
-*.txt
 *.json
 *.conf.py
 *.spec

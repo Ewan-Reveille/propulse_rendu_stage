@@ -1,0 +1,7 @@
+Flask>=2.3
+pandas
+tqdm
+nltk
+spacy
+gender-guesser
+gunicorn
