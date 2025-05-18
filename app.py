@@ -11,7 +11,7 @@ import spacy
 import re
 # import webbrowser
 import nltk
-
+import openpyxl
 
 # Télécharger les ressources nécessaires pour NLTK
 nltk.download("punkt")
@@ -155,12 +155,14 @@ def process_csv():
         df = pd.read_csv(file)
     except:
         # Si la lecture en tant que CSV échoue, essayer de lire en tant que fichier Excel
+        file.seek(0)
         try:
-            df = pd.read_excel(file)
-        except:
+            df = pd.read_excel(file, engine='openpyxl')
+        except Exception as e:
             # Si les deux méthodes échouent, renvoyer une erreur
-            return "Erreur de lecture du fichier : le format n'est ni CSV ni Excel."
-    
+            return "Erreur de lecture du fichier : le format n'est ni CSV ni Excel: {str(e)}"
+    else:
+        file.seek(0)
     # Appliquer les différentes fonctions de nettoyage sur la colonne "Société"
     df['Société'] = df['Société'].apply(lambda x: create_space_in_societe(x, company_name))
     df['Société'] = df['Société'].replace(r'[\u4e00-\u9fff]+', 'Société', regex=True)
