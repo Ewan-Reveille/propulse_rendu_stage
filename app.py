@@ -11,8 +11,7 @@ import spacy
 import re
 # import webbrowser
 import nltk
-import openpyxl
-
+import unicodedata
 # Télécharger les ressources nécessaires pour NLTK
 nltk.download("punkt")
 nltk.download("averaged_perceptron_tagger")
@@ -47,6 +46,13 @@ determinant_des = [mot + 's' for mot in determinant_de_l + determinant_du + dete
 # company_name = ["bureaux", "travaux", "grands", "groupes", "pavillons", "ministeres", "ministères", "réseaux", "reseaux", "groupement", "cheminées", "cheminees", 'mission', "maison", "companie", "cci", "fiduciaire", "compagnie", "caisse", "protection", "chambre", "commune", "place", "sncf", "banque", "fédération", "federation", "cheminée", "cheminee", "bureau", "travail", "groupe", "pavillon", "cabinet", "ministère", "ministere", "grand", "université", "universite", "réseau", "reseau", "club", "fc", "football", "groupement", "concret", "quai", "studio", "forum", "festival", "quai", "département", "departement", "grand", "institut", "agence", "atelier", "assurance", "association", "alliance", "etablissement", "établissement", "afnor", "essec", "appel", "orchestre", "académie", "academie", 'orchestre', "ensemble"]
 
 company_name = determinant_des + determinant_de_la + determinant_de_l + determinant_du
+
+def normalize_col(name):
+    # Remove accents and special characters
+    name = unicodedata.normalize('NFKD', str(name))
+    name = name.encode('ASCII', 'ignore').decode('utf-8')
+    # Standardize to lowercase with underscores
+    return name.strip().lower().replace(' ', '_')
 
 # Fonction pour vérifier si un mot appartient à une des listes de déterminants
 def is_in_determinant_lists(word, determinant_de_l, determinant_du, determinant_de_la):
@@ -154,28 +160,89 @@ def process_csv():
     try:
         df = pd.read_csv(file)
     except:
-        # Si la lecture en tant que CSV échoue, essayer de lire en tant que fichier Excel
         file.seek(0)
         try:
             df = pd.read_excel(file, engine='openpyxl')
         except Exception as e:
-            # Si les deux méthodes échouent, renvoyer une erreur
-            return "Erreur de lecture du fichier : le format n'est ni CSV ni Excel: {str(e)}"
-    else:
-        file.seek(0)
-    # Appliquer les différentes fonctions de nettoyage sur la colonne "Société"
-    df['Société'] = df['Société'].apply(lambda x: create_space_in_societe(x, company_name))
-    df['Société'] = df['Société'].replace(r'[\u4e00-\u9fff]+', 'Société', regex=True)
-    df['Société'] = df['Société'].apply(remove_enterprise_term)
-    df['Société'] = df['Société'].apply(remove_comma_and_following)
-    df['Société'] = df['Société'].apply(remove_hyphen_and_following)
-    df['Société'] = df['Société'].apply(remove_pipe_and_following)
-    df['Société'] = df['Société'].apply(remove_twopoints_and_following)
-
-    # Fonction pour détecter le genre d'un prénom
+            return f"Error reading file: {str(e)}"
     def detect_gender(name):
+        # If name is missing (NaN), empty, or not a string → just return an empty civilité
+        if name is None or (not isinstance(name, str)) or not name.strip():
+            return ""
+        
         detector = gender_detector.Detector(case_sensitive=False)
         return detector.get_gender(name)
+
+
+    # Normalize column names with accent removal
+    def normalize_col(name):
+        name = unicodedata.normalize('NFKD', str(name))
+        name = name.encode('ASCII', 'ignore').decode('utf-8')
+        return name.strip().lower().replace(' ', '_')
+    
+    df.columns = [normalize_col(col) for col in df.columns]
+
+    # Expanded column mapping
+    column_map = {
+        'firstname': ['firstname', 'prenom', 'givenname', 'prenom', 'first_name'],
+        'suggestion_de_prenom': ['suggestionprenom', 'prenomsuggestion', 'suggestion_de_prenom'],
+        'societe': ['societe', 'company', 'entreprise'],
+        'civilite': ['civilite', 'title', 'gender']
+    }
+
+    for standard_name, variants in column_map.items():
+        for variant in variants:
+            if variant in df.columns:
+                df.rename(columns={variant: standard_name}, inplace=True)
+
+    # Handle missing firstnames using suggestion column
+    # if 'suggestion_de_prenom' in df.columns:
+    df['firstname'] = df['firstname'].fillna('undefined')
+    app.logger.info("firstname null counts: %s", df['firstname'].isnull().value_counts())
+    missing_first = df[df['firstname'].isnull()]
+    if not missing_first.empty:
+        return "error: Missing firstnames in the file. Please check the file and try again."
+
+
+    # Validate required columns
+    required = ['societe', 'civilite', 'email']
+    missing = [col for col in required if col not in df.columns]
+    
+    if missing:
+        return render_template('error.html',
+                            message=f"Colonnes obligatoires manquantes: {', '.join(missing)}")
+    print("Mapped columns:", df.columns.tolist())
+    app.logger.info("Firstname column values / null‐counts:\n%s", df['firstname'].isnull().value_counts())
+    app.logger.info("Sample of firstname column:\n%s", df['firstname'].head(10))
+
+    # Process rows with missing firstnames instead of failing
+    df['civilite'] = df.apply(lambda row: (
+        row['civilite']
+        if pd.notnull(row['civilite'])
+        else (
+            # only call detect_gender if we actually have a string
+            detect_gender(row['firstname'])
+            if isinstance(row['firstname'], str) and row['firstname'].strip()
+            else ""
+        )
+    ), axis=1)
+
+
+    
+    if missing:
+        return render_template('error.html',
+                            message=f"File missing required columns: {', '.join(missing)}")
+
+    # Rest of your processing code using .get() for column access
+    for index, row in df.iterrows():
+        current_firstname = row['firstname']
+        current_email     = row['email']
+        current_societe   = row['societe']
+        current_civilite  = row['civilite']
+        # Check if the first name is empty or NaN
+            # Handle missing first name
+
+    # Fonction pour détecter le genre d'un prénom
 
     # Fonction pour vérifier si un nom commun commence par une voyelle
     def is_commom_noun_starting_with_vowel(word) -> bool:
@@ -271,10 +338,37 @@ def process_csv():
     
     if 'chez' not in df.columns:
         df['chez'] = ""
-        columns_order = [col for col in df.columns if col not in ['chez', 'Société']]
+    all_current_columns = df.columns.tolist()
+    expected_leading_cols = ['civilite', 'firstname', 'suggestion_de_prenom', 'nom']
+    col_to_insert_1 = 'chez'
+    col_to_insert_2 = 'societe'
 
-    columns_order.insert(4, 'chez')
-    columns_order.insert(5, 'Société')
+    new_order = []
+    processed_cols = set()
+
+    for col_name in expected_leading_cols:
+        if col_name in all_current_columns:
+            new_order.append(col_name)
+            processed_cols.add(col_name)
+
+    # 2. Add 'chez' (it should exist at this point due to the check above)
+    if col_to_insert_1 in all_current_columns:
+        new_order.append(col_to_insert_1)
+        processed_cols.add(col_to_insert_1)
+    
+    # 3. Add 'societe' (it should exist as it's a required column from earlier check)
+    if col_to_insert_2 in all_current_columns:
+        new_order.append(col_to_insert_2)
+        processed_cols.add(col_to_insert_2)
+    
+    # 4. Add all other remaining columns from the DataFrame
+    for col_name in all_current_columns:
+        if col_name not in processed_cols:
+            new_order.append(col_name)
+            # processed_cols.add(col_name) # No need to add to set here
+
+    columns_order = new_order
+
 
     df = df[columns_order]
 
@@ -283,7 +377,7 @@ def process_csv():
     # Compter le nombre total de lignes où la civilité est "Monsieur"
     if 'Civilité' in df.columns:
         # Compte le nombre de lignes où la civilité est "Monsieur"
-        count_monsieur = (df['Civilité'] == 'Monsieur').sum()
+        count_monsieur = min((df['Civilité'] == 'Monsieur').sum(),1)
         print("Nombre total de lignes avec civilité 'Monsieur':", count_monsieur, "nombre total de lignes", total_rows)
 
         # Utilise tqdm pour afficher une barre de progression lors du chargement du fichier
@@ -407,7 +501,7 @@ def process_csv():
 
     with pd.ExcelWriter(output_file) as writer:
         # Écrit le DataFrame original dans la première feuille
-        df.dropna(subset=['Email']).to_excel(writer, sheet_name='Data', index=False)
+        df.dropna(subset=['email']).to_excel(writer, sheet_name='Data', index=False)
 
         # Écrit le DataFrame avec les emails manquants dans la deuxième feuille, s'il n'est pas vide
         if not df_null_email.empty:

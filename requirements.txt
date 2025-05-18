@@ -5,3 +5,5 @@ nltk
 spacy
 gender-guesser
 gunicorn
+openpyxl
+numpy
