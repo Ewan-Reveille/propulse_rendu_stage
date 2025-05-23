@@ -15,6 +15,7 @@ import unicodedata
 # Télécharger les ressources nécessaires pour NLTK
 nltk.download("punkt")
 nltk.download("averaged_perceptron_tagger")
+nltk.download('averaged_perceptron_tagger_eng')
 nltk.download("wordnet")
 # base_path = os.path.abspath(os.path.dirname(__file__))
 # model_directory = os.path.join(base_path, 'fr_core_news_sm')
@@ -25,6 +26,7 @@ nlp = spacy.load(model_directory)
 
 # Load the SpaCy model
 # nlp = spacy.load(model_directory)
+gender_detector_instance = gender_detector.Detector(case_sensitive=False)
 
 
 # Charger le modèle de langue spaCy
@@ -169,9 +171,7 @@ def process_csv():
         # If name is missing (NaN), empty, or not a string → just return an empty civilité
         if name is None or (not isinstance(name, str)) or not name.strip():
             return ""
-        
-        detector = gender_detector.Detector(case_sensitive=False)
-        return detector.get_gender(name)
+        return gender_detector_instance.get_gender(name)
 
 
     # Normalize column names with accent removal
@@ -262,14 +262,18 @@ def process_csv():
 
     # Fonction pour déterminer le préfixe et le déterminant à utiliser avec le nom d'une entreprise
     def determiner_prefixe_pronom(nom_entreprise):
-    # Vérifier si la colonne "Société" est vide ou NaN
+    # Vérifier si la colonne "societe" est vide ou NaN
         if not nom_entreprise or nom_entreprise.strip() == "" or nom_entreprise == "au sein de votre entreprise" or pd.isna(nom_entreprise):
             return "au sein", "de votre entreprise"
+        doc = nlp(nom_entreprise.strip())
+        if not doc:
+            return "chez", ""
+        
+        premier_mot = doc[0].text.lower()
 
         tokens = word_tokenize(nom_entreprise.lower())
         prefixe = 'au sein'
         determinant = ""
-        
         
         # print(determinant_des)
         
@@ -277,16 +281,16 @@ def process_csv():
             if tokens[0][0].lower() == "l" and tokens[0][1] == "'":
                 prefixe = "au sein"
                 determinant = "de"
-            elif tokens[0].lower() in determinant_de_l:
+            elif premier_mot in determinant_de_l:
                 prefixe = "au sein"
                 determinant = "de l'"
-            elif tokens[0].lower() in determinant_du: #"mannequin", "chancelier", "chineur", "cireur"
+            elif premier_mot in determinant_du: #"mannequin", "chancelier", "chineur", "cireur"
                 prefixe = "au sein"
                 determinant = "du"
-            elif tokens[0].lower() in determinant_des or (tokens[0].lower()[:-1] in determinant_des and tokens[0].lower()[-1] in ['s', 'x']):
+            elif premier_mot in determinant_des or (premier_mot[:-1] in determinant_des and premier_mot[-1] in ['s', 'x']):
                 prefixe = "au sein"
                 determinant = "des"
-            elif tokens[0].lower() in determinant_de_la:
+            elif premier_mot in determinant_de_la:
                 prefixe = "au sein"
                 determinant = "de la"        # Règles spécifiques pour certaines entreprises
             elif detect_first_word_type(nom_entreprise) == "nom_commun":
@@ -311,7 +315,7 @@ def process_csv():
             prefixe = "error"
             determinant = ""
         try:
-            if tokens[0].lower() in ["umake", "owkin", "isocel", "isocel.", "isocel.leclerc", "leclerc", "carrefour", "géant", "geant", "imerys", "afept", "acteon", "valorem", "voxelis", "vatel", "yzar", "accenture", "aemsofts", "sii", "sll", "metapolis", "memoandco", "maincare", "fayat", "eove", "cybertek", "cultura", ""] and prefixe == "au sein":
+            if prefixe == "au sein" and tokens[0].lower() in ["umake", "owkin", "isocel", "isocel.", "isocel.leclerc", "leclerc", "carrefour", "géant", "geant", "imerys", "afept", "acteon", "valorem", "voxelis", "vatel", "yzar", "accenture", "aemsofts", "sii", "sll", "metapolis", "memoandco", "maincare", "fayat", "eove", "cybertek", "cultura", ""] and prefixe == "au sein":
                 prefixe = "chez"
                 determinant = ""
             if prefixe == "chez" and tokens[0].lower in ["agriculteur", "agricultrice", "agriculture", "amateur", "analyste", "arbitre", "artiste"]:
@@ -330,8 +334,8 @@ def process_csv():
     # Créer un nouveau DataFrame pour les lignes avec des valeurs d'e-mail nulles
     
     df_null_email = pd.DataFrame()  
-    if 'Email' in df.columns:
-        df_null_email = df[df['Email'].isnull()]
+    if 'email' in df.columns:
+        df_null_email = df[df['email'].isnull()]
 
     if 'Suggestion de Prénom' not in df.columns:
         df['Suggestion de Prénom'] = ""
@@ -373,11 +377,19 @@ def process_csv():
     df = df[columns_order]
 
     total_rows = len(df)
+    civility_columns = ['Civilité', 'civilite', 'Civilite', 'civilité']
+    existing_civility_col = next((col for col in civility_columns if col in df.columns), None)
+    if existing_civility_col:
+        # Standardize the column name to 'civilite'
+        df.rename(columns={existing_civility_col: 'civilite'}, inplace=True)
+    else:
+        # Create the column if it doesn't exist
+        df['civilite'] = None
 
     # Compter le nombre total de lignes où la civilité est "Monsieur"
-    if 'Civilité' in df.columns:
+    if 'civilite' in df.columns:
         # Compte le nombre de lignes où la civilité est "Monsieur"
-        count_monsieur = min((df['Civilité'] == 'Monsieur').sum(),1)
+        count_monsieur = max((df['civilite'] == 'Monsieur').sum(),1)
         print("Nombre total de lignes avec civilité 'Monsieur':", count_monsieur, "nombre total de lignes", total_rows)
 
         # Utilise tqdm pour afficher une barre de progression lors du chargement du fichier
@@ -392,29 +404,28 @@ def process_csv():
                 if (not pd.isnull(row['nom'])) and '.' not in str(row['nom']):
                     df.at[index, 'Suggestion de Prénom'] = row['nom']
                 
-                # Si la colonne 'Société' est une chaîne de caractères
-                if isinstance(row['Société'], str):
-                        # Supprime les parenthèses et leur contenu de 'Société'
-                        row_societe_cleaned = remove_parentheses(row['Société'])
-                        
+                # Si la colonne 'societe' est une chaîne de caractères
+                if isinstance(row['societe'], str):
+                        # Supprime les parenthèses et leur contenu de 'societe'
+                        row_societe_cleaned = remove_parentheses(row['societe'])
                         # Détermine le préfixe et le déterminant
                         prefix, determinant = determiner_prefixe_pronom(row_societe_cleaned)
                         
-                        # Met à jour le DataFrame avec la valeur nettoyée et traitée de 'Société'
-                        df.at[index, 'Société'] = f"{row_societe_cleaned}"
+                        # Met à jour le DataFrame avec la valeur nettoyée et traitée de 'societe'
+                        df.at[index, 'societe'] = f"{row_societe_cleaned}"
                         if isinstance(row['chez'], str):
                             prefix, determinant = determiner_prefixe_pronom(row_societe_cleaned)
                             df.at[index, 'chez'] = f"{prefix} {determinant} "
                 
                 # Si la colonne 'firstName' est vide
-                if pd.isnull(row['firstName']):
+                if pd.isnull(row['firstname']):
                     if total_rows / count_monsieur >= 0.5:
-                            df.at[index, 'Civilité'] = "Monsieur"
+                            df.at[index, 'civilite'] = "Monsieur"
                     else:
-                        df.at[index, 'Civilité'] = 'Madame'
-                # Si la colonne 'Civilité' est vide
-                elif pd.isnull(row['Civilité']):
-                    first_names = row['firstName'].split()
+                        df.at[index, 'civilite'] = 'Madame'
+                # Si la colonne 'civilite' est vide
+                elif pd.isnull(row['civilite']):
+                    first_names = row['firstname'].split()
                     first_name = first_names[0]
                     gender = detect_gender(first_name)
                     if gender in ["andy", "unknown", "error"]:
@@ -422,28 +433,28 @@ def process_csv():
                             second_name = first_names[1]
                             gender = detect_gender(second_name)
                     if gender == "female" or gender == "mostly_female":
-                        df.at[index, 'Civilité'] = "Madame"
+                        df.at[index, 'civilite'] = "Madame"
                     elif gender == "male" or gender=="mostly_male":
-                        df.at[index, 'Civilité'] = "Monsieur"
+                        df.at[index, 'civilite'] = "Monsieur"
                     elif gender == "andy":
                         if total_rows / count_monsieur >= 0.5:
-                            df.at[index, 'Civilité'] = "Monsieur"
+                            df.at[index, 'civilite'] = "Monsieur"
                         else:
-                            df.at[index, 'Civilité'] = 'Madame'
+                            df.at[index, 'civilite'] = 'Madame'
                     elif gender == "unknown":
                         if total_rows / count_monsieur >= 0.5:
-                            df.at[index, 'Civilité'] = "Monsieur"
+                            df.at[index, 'civilite'] = "Monsieur"
                         else:
-                            df.at[index, 'Civilité'] = 'Madame'
+                            df.at[index, 'civilite'] = 'Madame'
                     else:
-                        df.at[index, 'Civilité'] = "Erreur"
+                        df.at[index, 'civilite'] = "Erreur"
 
-                # Si la colonne 'Email' est vide
-                if pd.isnull(row['Email']):
-                    if pd.isnull(row['firstName']):
-                        df_null_email.at[index, 'Civilité'] = "Prénom non attribué"
+                # Si la colonne 'email' est vide
+                if pd.isnull(row['email']):
+                    if pd.isnull(row['firstname']):
+                        df_null_email.at[index, 'civilite'] = "Prénom non attribué"
                     else:
-                        first_names = row['firstName'].split()
+                        first_names = row['firstname'].split()
                         first_name = first_names[0]
                         gender = detect_gender(first_name)
                         if gender in ["andy", "unknown", "error"]:
@@ -451,27 +462,27 @@ def process_csv():
                                 second_name = first_names[1]
                                 gender = detect_gender(second_name)
                         if gender == "female" or gender == "mostly_female":
-                            df_null_email.at[index, 'Civilité'] = "Madame"
+                            df_null_email.at[index, 'civilite'] = "Madame"
                         elif gender == "male" or gender=="mostly_male":
-                            df_null_email.at[index, 'Civilité'] = "Monsieur"
+                            df_null_email.at[index, 'civilite'] = "Monsieur"
                         elif gender == "andy":
                             if total_rows / count_monsieur >= 0.5:
-                                df.at[index, 'Civilité'] = "Monsieur"
+                                df.at[index, 'civilite'] = "Monsieur"
                             else:
-                                df.at[index, 'Civilité'] = 'Madame'
+                                df.at[index, 'civilite'] = 'Madame'
                         elif gender == "unknown":
                             if count_monsieur / total_rows < 50:
-                                df_null_email.at[index, 'Civilité'] = "Madame"
+                                df_null_email.at[index, 'civilite'] = "Madame"
                             else:
-                                df_null_email.at[index, 'Civilité'] = "Monsieur"
+                                df_null_email.at[index, 'civilite'] = "Monsieur"
                         else:
-                            df_null_email.at[index, 'Civilité'] = "Erreur"
+                            df_null_email.at[index, 'civilite'] = "Erreur"
                 
                 # Vérifie si une partie du nom de famille correspond au nom de la société
-                if isinstance(row['nom'], str) and isinstance(row['Société'], str):
+                if isinstance(row['nom'], str) and isinstance(row['societe'], str):
                     last_name_parts = row['nom'].split()
                     for part in last_name_parts:
-                        if part.lower() in row['Société'].lower():
+                        if part.lower() in row['societe'].lower():
                             df.at[index, 'Match Entreprise'] = 'Oui'
                             break
                     else:
@@ -481,9 +492,7 @@ def process_csv():
 
     # df_combined = pd.concat([df, df_null_email], ignore_index=True)
 
-    # df_combined = df_combined.dropna(subset=['Email'])
-
-    print(df)
+    # df_combined = df_combined.dropna(subset=['email'])
 
     # Obtient le nom de fichier de la session
     filename = session.get('filename')
@@ -505,11 +514,11 @@ def process_csv():
 
         # Écrit le DataFrame avec les emails manquants dans la deuxième feuille, s'il n'est pas vide
         if not df_null_email.empty:
-            df_null_email.to_excel(writer, sheet_name='Null-Email', index=False)
+            df_null_email.to_excel(writer, sheet_name='Null-email', index=False)
     
     # Supprime les lignes avec des emails manquants du DataFrame
-    if 'Email' in df.columns:
-        df.dropna(subset=['Email'], inplace=True)
+    if 'email' in df.columns:
+        df.dropna(subset=['email'], inplace=True)
     # Affiche le résultat dans le template HTML
     return render_template('result.html', data=df.to_html(), df_email_data=df_null_email.to_html(), filename=output_file)
 
