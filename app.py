@@ -401,8 +401,9 @@ def process_csv():
             # Parcourt chaque ligne du DataFrame
             for index, row in df.iterrows():
                 # Si la colonne 'nom' n'est pas vide et ne contient pas de point, ajoute la valeur à 'Suggestion de Prénom'
-                if (not pd.isnull(row['nom'])) and '.' not in str(row['nom']):
-                    df.at[index, 'Suggestion de Prénom'] = row['nom']
+                current_nom_value = row.get('nom') # Use .get() for safety
+                if pd.notnull(current_nom_value) and '.' not in str(current_nom_value):
+                    df.at[index, 'suggestion_de_prenom'] = current_nom_value
                 
                 # Si la colonne 'societe' est une chaîne de caractères
                 if isinstance(row['societe'], str):
