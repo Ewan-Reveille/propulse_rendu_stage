@@ -39,9 +39,9 @@ nlp = spacy.load(model_directory)
 
 
 # Listes de déterminants pour différentes prépositions
-determinant_de_l = ['agence', "union", "éducation", "education", "institut", "agence", "atelier", "assurance", "association", "alliance", "etablissement", "établissement", "afnor", "essec", "appel", "orchestre", "académie", "academie", 'orchestre', "ensemble", "abaissement", "abajoue", "abandon", "abaque", "abat", "abattant", "abattement", "abattis", "abattoir", "abaya", "abbaye", "aberration", "abime", "abîme", "abject", "ablatif", "ablation", "ablette", "abnégation", "abnegation", "aboiement", "abois", "abolition", "abolitionnisme", "abolissioniste", "abominable", "abondance", "abondant", "abonné", "abonnement", "abord", "abordage", "aborigène", "aboulie", "aboutissant", "aboutissement", "abrasif", "abreuvoir", "abri", "abricot", "abricotier", "abrogation", "absolu", "absolution", "abysse", "académie", "academie", "acajou", "acanthe", "accalmie", "accastillage", "accélération", "acceleration", "accent", "accentuation", "acceptation", "acception", "accès", "acces", "accessit", "accessoire", "accessoiriste", "acclamation", "acclimatement", "accointance", "accolade", "accomandation", "accompagnat", "accompagnement", "accord", "accordéoniste", "accordeur", "accotement", "accotoir", "accoutrement", "accréditation", "accreditation", "accrobranche", "accroche", "accueil", "acculturation", "acerola", "acérola", "achat", "acheteur", "acheteuse", "acide", "aciérage", "acierage", "acierie", "aciérie", "acolyte", "acropole", "acrostiche", "acte", "action", "acting", "actionnaire", "actionnariat", "activisme", "activiste", "activité", "activite", "actualité", "actualite", "acupuncteur", "acupunctrice", "accunpuncture", "adage", "adaptation", "adaptateur", "adaptatrice", "adhérence", "adhésif", "adherence", "adhesif","adjoint", "adjointe", "adjonction", "administrateur", "admission", "adoption", "adoucissant", "adsl", "aero", "aéro", "aérodrome", "aerodrome", "aérogare", "aerogare", "adresse", "aéronef", "aeronef", "aéroport", "aeroport", "aérospatial", "aerospatial", "affaire", "affectation", "affectif", "affiche", "affichage", "affiliation", "affluence", "agencement", "agile", "agissement", "agrafeuse", "agrégation", "agregation", "agriculture", "allié", "allie", "alchimiste", "algorithme", "algothérapie", "algotherapie", "alignement", "alinéa", "alinea", "allée", "allee", "allégorie", "allegorie", "allergologue", "allocation", "almanach", "alpaga", "alphabet", "alternant", "amandier", "amandine", "aménagement", "amenagement", "amphithéâtre", "amphitheatre", "anaconda", "analyse", "ancre", "annonciation", "aqueduc", "arbre", "arcade", "archipel", "architecte", "archive", "archiviste", "arène", "arene", "arlequin", "armée", "armee", "armorier", "arrondissement", "artefact", "article", "assemblement", "assistance", "association", "associe", "associé", "assurance", "assureur", "astuce", "atelier", "atrium", "attelage", "atypique", "audience", "auto-école", "autoécole", "auto-ecole", "autoecole", "avancée", "avenir", "eau", "écart", "ecart", "e-book", "ebook", "écran", "ecran", "écrit", "ecrit", "écurie", "ecurie", "éducation", "education", "effet", "église", "eglise", "ehpad", "empire", "emploi", "enclos", "encodage", "engagement", "engin", "énigme", "enigme", "ennui", "enregistrement", "enseignement", "entente", "entraide", "entrainement", "entrée", "entree", "entretien", "enveloppe", "envers", "épreuve", "epreuve", "esg", "essence", "étale", "etale", "état", "etat", "étude", "etude", "éveil", "eveil", "excès", "exces", "excursion", "exercice", "exode", "expérience", "experience", "expert", "exposition", "expression", "habitat", "hall", "harmonie", "hauteur", "herbe", "héritier", "heritier", "heure", "histoire", "homme", "honneur", "hôpial", "hopital", "hôtel", "hotel", "humain", "hypothèse", "hypothese", "icône", "icone", "idéal", "ideal", "identite", "identité", "idole", "image", "illusion", "imitaton", "immobilier", "inclusion", "incubateur", "indice", "induction", "information", "innocence", "inscription", "insolite", "instance", "instrument", "interface", "intérieur", "interieur", "interprète", "interprete", "iut", "iufm", "observatoire", "objet", "océan", "ocean", "oeil", "oiseau", "onu", "opération", "operation", "opinion", "option", "orage", "ordinateur", "organe", "organisation", "oreille", "orientation", "orsec", "ours", "umts", "union", "unité", "unite", "urgence", "urgent", 'usine', "utilitaire", "utopie"]
-determinant_du = ["bureau", "travail", "groupe", "pavillon", "cabinet", "ministère", "ministere", "grand", "université", "universite", "réseau", "reseau", "club", "fc", "football", "groupement", "concret", "quai", "studio", "forum", "festival", "quai", "département", "departement", "grand", "baladeur", "bailleur", "balai", "balcon", "balisage", "banquet", "barbecue", "barrage", "barreau", "basket", "bâteau", "bateau", "bataillon", "bénévole", "bénévolat", "bénédiction", "benevole", "benediction", "benevolat", "berceau", "berlingot", "bermuda", "bétisier", "betisier", "bijou", "bouquin", "bricolage", "bulletin", "business", "bivouac","cabanon", "cabaret", "cac", "cacaoyer", "cacaotier", "cachalot", "cachemire", "cachet", "cachot", "cadavre", "cadeau", "cadenas", "cadran", "cadre", "café", "cafe", "caféier", "cafeier", "cageot", "cagibi", "cahier", "cahiou", "caissier", "calcium", "calcul", "calendrier", "calepin", "calibre", "calibrage", "calice", "califat", "câlin", "calin", "calisson", "calligramme", "calme", "calque", "calvaire", "cambiste", "camelot", "camion", "camionnage", "camp", "camouflage", "campement", "camping", "campus", "canal", "candidat", "canif", "canon", "cantal", "canton", "canular", "cap", "capes", "capet","capital", "capteur", "capuchon", "car", "caractère", "caractere", "caramèle", "caravane", "carburateur", "cardinal", "carillon", "cariste", "carnettiste", "carrelage", "carrosse", "carrousel", "cartel", "cartographe", "carton", "casting", "catalogue", "cauchemard", "caveau", "cedex", "centre", "centuple", "cercle", "cerf", "challenge", "champagne", "champignon", "changement", "capeau", "chaperon", "chariot", "chargeur", "charismatique", "château", "chateau", "chauffagiste", "chauffage", "chauffeur", "chemin", "chéquier", "chequier", "cheval", "chevalier", "chevet", "chewing-gum", "chewinggum", "chic", "chien", "chiffon", "chimiste", "chocolat", "chu", "cirque", "circuit", "cercle", "classeur", "clerc", "climat", "clocher", "clown", "club", "cocher", "coffre", "cognac", "coin", "colibri", "collaborateur", "collège", "college", "colonel", "coloriage", "comble", "commandant", "commando", "commandement", "commencement", "commerce", "commercant", "commerçant", "compas", "compte", "concept", "concert", "concierge", "concours", "congé", "conge", "corps", "correspondant", "corridor", "cours", "cousin", "cp", "cpa", "cpf", "crédit", "credit", "crosse", "cross", "crs", "cse", "dao", "dat", "dea", "débat", "debat", "décret", "decret", "désert", "desert", "design", "dess", "dessous", "dessus", "détail", "detail", "deug", "deust", "devis", "devoir", "dg", "dîner", "diner", "dj", "doigt", "dom", "domino", "don", "dossier", "doux", "dragon", "droit", "duo", "feu", "fichier", "flan", "fleuriste", "flocon", "fort", "franc", "frère", "frere", "gang", "garagiste", "garde", "génie", "genie", "genre", "golf", "golfe", "groupe", "jardin", "jeu","jeune", "jour", "journal", "juge", "jury", "jus", "karma", "kiosque", "label", "lac", "laboratoire", "lacet", "laitage", "langage", "lapin", "lecteur", "lingot", "littoral", "livre", "local", "logement", "logo", "lp", "lustre", "lundi", "magasin", "magnolia", "mais", "maïs", "maitre", "mandat", "manga", "manteau", "manuel", "marais", "marathon", "marchand", "marché", "membre", "mensuel", "hebdomadaire", "métro", "metro", "meuble", "ministère", "ministere", "modèle", "modele", "module", "mof", "monde", "mooc", "mot", "muscle", "nerf", "neveu", "nez", "nid", "niveau", "nomade", "nord", "paf", "panier", "papier", "papillon", "paquet", "paramètre", "parametre", "parc", "parcours", "parlement", "parquet", "parti", "passage", "pc", "pdf", "pcv", "père", "pere", "permis", "peuple", "phare", "pilote", "plan", "pôle", "port", "pont", "portfolio", "post", "principe", "principal", "profil", "programme", "projet", "propos", "quotidien", "rappel", "rapport", "rayon", "rep", "repos", "résidence", "residence", "résolution", "resolution", "resto", "restaurant", "rice", "roman", "rse", "rsa", "sac", "saint", "samu", "saut", "sav", "script", "scribe", "secret", "secours", "sel", "service", "seuil", "signe", "soin", "sort", "sourire", "soutien", "spam", "spectre", "stade", "stick", "suv", "tableau", "talon", "temps", "tissu", "tir", "tombeau", "trait", "traité", "traite", "traiteur", "trader", "transfert", "travail", "tribunal", "triomphe", "troc", "trou", "valet", "vase", "vélo", "velo", "vent", "vin", "wagon", "web"]
-determinant_de_la = ['mission', "maif", "galerie", "matmut", "région", "region", "monnaie","maison", "companie", "cci", "fiduciaire", "compagnie", "caisse", "protection", "chambre", "commune", "place", "sncf", "banque", "fédération", "federation", "cheminée", "cheminee", "balance", "balise", "balise", "banane", "banderolle", "bande", "bannière", "banniere", "banque", "barre", "bibliothèque", "bijouterie", "borne", "buanderie", "cabine", "cacahouète", "cacahouete", "cachette", "cachotterie", "cadence", "caf", "caféine", "cafeine", "cafétériat", "cafeteria", "cafetière", "cafetiere", "cage", "cagnotte", "cagoule", "caille", "caissette", "caisse", "caissière", "caissiere", "calculette", "calculatrice", "cale", "caline", "câline", "câlinerie", "calinerie", "calligraphie", "calotte", "calvitie", "camaraderie", "cambuse", "campagne", "candidate", "cantine", "CAO", "capacité", "capacite", "cape", "capitale", "capsule", "carafe", "carapace", "carcasse", "caricature", "carotte", "cartoucherie", "cascade", "caserne", "casquette", "casserole", "caste", "catégorie", "categorie", "cavalerie", "caverne", "cave", "ceinture", "ceinturon", "célébration", "celebration", "célèbre", "celebre", "cellule", "centaine", "centrale", "centrifuge", "certification", "cfao", "chaîne", "chaine", "chaise", "chambre", "chanson", "chapelle", "charge", "chasse", "chaudière", "chaudiere", "chaussée", "chaussee", "chemise", "chevelure", "chope", "ville", "mairie", "citadine", "citadelle", "cité", "cite", "classe", "clairière", "clairiere", "classe", "classification", "clause", "clinique", "clique", "cloche", "clôture", "cloture", "collection", "coiffure", "colline", "colonie", "colonne", "coloration", "com", "combinaison", "commande", "commedia", "communauté", "communaute", "commune", "communication", "compétition", "competition", "compote", "concurrence", "concentration", "convention", "corde", "correspondante", "correspondance", "cote", "couche", "couleur", "coupe", "cousine", "coutellerie", "cravate", "crème", "creme", "csg", "csp", "cuisine", "culture", "dame", "décharge", "decharge", "déclaration", "declaration", "dérive", "derive", "descente", "dgse", "dgsi", "diaspora", "dictée", "dictee", "diction", "dictionnaire", "diction", "discussion", "dissertation", "distribution", "famille", "fée", "fee", "femme", "ferme", "feuille", "fiche", "figure", "flamme", "fleur", "flotte", "fondue", "forge", "foule", "fourrure", "fraternté", "fraternite", "fruitière", "fruitiere", "galerie", "garantie", "garde-robe", "garderobe", "greffe", "grenouille", "jetée", "jetee", "justice", "lecture", "légende", "legende", "lettre", "libération", "liberation", "ligne", "limite", "lingerie", "loge", "loi", "lumière", "lumiere", "lutte", "machine", "magazine", "main", "marche", "marine", "marque", "mégapole", "mégalopole", "mémoire", "memoire", "mine", "mise", "mode", "monnaie", "nageoire", "nature", "neige", "niche", "noblesse", "nomenclature", "note", "page", "paire", "pancarte", "panoplie", "pao", "papeterie", "parabole", "parade", "parole", "part", "partie", "patte", "peche", "pêche", "perspective", "pièce", "piece", "piste", "place", "plateforme", "plate-forme", "porte", "pratique", "pratique", "présentation", "presentation", "presse", "preuve", "primaire", "principale", "prise", "profession", "province", "question", "queue", "recherche", "région", "region", "reprise", "réussite", "rfid", "rgpd", "roue", "route", "rue", "salade", "salle", "santé", "série", "sirène", "sirene", "société", "societe", "station", "structure", "suite", "supérette", "superette", "surface", "table", "tablée", "tablee", "tapisserie", "tête", "tete", "thèse", "these", "tirelire", "toile", "tournée", "tournee", "tranche", "transaction", "troupe", "tutoriel", "valeur", "valise", "vérité", "verite", "vérification", "verification", "vertu", "voile", "voie", "voix", "vpc", "zif", "zone"]
+determinant_de_l = ['agence', "edition", "édition", "officine", "imprimerie", "assemblée", "assemble", "union", "éducation", "education", "institut", "agence", "atelier", "assurance", "association", "alliance", "etablissement", "établissement", "afnor", "essec", "appel", "orchestre", "académie", "academie", 'orchestre', "ensemble", "abaissement", "abajoue", "abandon", "abaque", "abat", "abattant", "abattement", "abattis", "abattoir", "abaya", "abbaye", "aberration", "abime", "abîme", "abject", "ablatif", "ablation", "ablette", "abnégation", "abnegation", "aboiement", "abois", "abolition", "abolitionnisme", "abolissioniste", "abominable", "abondance", "abondant", "abonné", "abonnement", "abord", "abordage", "aborigène", "aboulie", "aboutissant", "aboutissement", "abrasif", "abreuvoir", "abri", "abricot", "abricotier", "abrogation", "absolu", "absolution", "abysse", "académie", "academie", "acajou", "acanthe", "accalmie", "accastillage", "accélération", "acceleration", "accent", "accentuation", "acceptation", "acception", "accès", "acces", "accessit", "accessoire", "accessoiriste", "acclamation", "acclimatement", "accointance", "accolade", "accomandation", "accompagnat", "accompagnement", "accord", "accordéoniste", "accordeur", "accotement", "accotoir", "accoutrement", "accréditation", "accreditation", "accrobranche", "accroche", "accueil", "acculturation", "acerola", "acérola", "achat", "acheteur", "acheteuse", "acide", "aciérage", "acierage", "acierie", "aciérie", "acolyte", "acropole", "acrostiche", "acte", "action", "acting", "actionnaire", "actionnariat", "activisme", "activiste", "activité", "activite", "actualité", "actualite", "acupuncteur", "acupunctrice", "accunpuncture", "adage", "adaptation", "adaptateur", "adaptatrice", "adhérence", "adhésif", "adherence", "adhesif","adjoint", "adjointe", "adjonction", "administrateur", "admission", "adoption", "adoucissant", "adsl", "aero", "aéro", "aérodrome", "aerodrome", "aérogare", "aerogare", "adresse", "aéronef", "aeronef", "aéroport", "aeroport", "aérospatial", "aerospatial", "affaire", "affectation", "affectif", "affiche", "affichage", "affiliation", "affluence", "agencement", "agile", "agissement", "agrafeuse", "agrégation", "agregation", "agriculture", "allié", "allie", "alchimiste", "algorithme", "algothérapie", "algotherapie", "alignement", "alinéa", "alinea", "allée", "allee", "allégorie", "allegorie", "allergologue", "allocation", "almanach", "alpaga", "alphabet", "alternant", "amandier", "amandine", "aménagement", "amenagement", "amphithéâtre", "amphitheatre", "anaconda", "analyse", "ancre", "annonciation", "aqueduc", "arbre", "arcade", "archipel", "architecte", "archive", "archiviste", "arène", "arene", "arlequin", "armée", "armee", "armorier", "arrondissement", "artefact", "article", "assemblement", "assistance", "association", "associe", "associé", "assurance", "assureur", "astuce", "atelier", "atrium", "attelage", "atypique", "audience", "auto-école", "autoécole", "auto-ecole", "autoecole", "avancée", "avenir", "eau", "écart", "ecart", "e-book", "ebook", "écran", "ecran", "écrit", "ecrit", "écurie", "ecurie", "éducation", "education", "effet", "église", "eglise", "ehpad", "empire", "emploi", "enclos", "encodage", "engagement", "engin", "énigme", "enigme", "ennui", "enregistrement", "enseignement", "entente", "entraide", "entrainement", "entrée", "entree", "entretien", "enveloppe", "envers", "épreuve", "epreuve", "esg", "essence", "étale", "etale", "état", "etat", "étude", "etude", "éveil", "eveil", "excès", "exces", "excursion", "exercice", "exode", "expérience", "experience", "expert", "exposition", "expression", "habitat", "hall", "harmonie", "hauteur", "herbe", "héritier", "heritier", "heure", "histoire", "homme", "honneur", "hôpial", "hopital", "hôtel", "hotel", "humain", "hypothèse", "hypothese", "icône", "icone", "idéal", "ideal", "identite", "identité", "idole", "image", "illusion", "imitaton", "immobilier", "inclusion", "incubateur", "indice", "induction", "information", "innocence", "inscription", "insolite", "instance", "instrument", "interface", "intérieur", "interieur", "interprète", "interprete", "iut", "iufm", "observatoire", "objet", "océan", "ocean", "oeil", "oiseau", "onu", "opération", "operation", "opinion", "option", "orage", "ordinateur", "organe", "organisation", "oreille", "orientation", "orsec", "ours", "umts", "union", "unité", "unite", "urgence", "urgent", 'usine', "utilitaire", "utopie"]
+determinant_du = ["bureau", "département", "transport", "departement", "department", "domaine", "travail", "palais", "site", "groupe", "pavillon", "cabinet", "ministère", "ministere", "grand", "université", "universite", "réseau", "reseau", "club", "fc", "football", "groupement", "concret", "quai", "studio", "forum", "festival", "quai", "département", "departement", "grand", "baladeur", "bailleur", "balai", "balcon", "balisage", "banquet", "barbecue", "barrage", "barreau", "basket", "bâteau", "bateau", "bataillon", "bénévole", "bénévolat", "bénédiction", "benevole", "benediction", "benevolat", "berceau", "berlingot", "bermuda", "bétisier", "betisier", "bijou", "bouquin", "bricolage", "bulletin", "business", "bivouac","cabanon", "cabaret", "cac", "cacaoyer", "cacaotier", "cachalot", "cachemire", "cachet", "cachot", "cadavre", "cadeau", "cadenas", "cadran", "cadre", "café", "cafe", "caféier", "cafeier", "cageot", "cagibi", "cahier", "cahiou", "caissier", "calcium", "calcul", "calendrier", "calepin", "calibre", "calibrage", "calice", "califat", "câlin", "calin", "calisson", "calligramme", "calme", "calque", "calvaire", "cambiste", "camelot", "camion", "camionnage", "camp", "camouflage", "campement", "camping", "campus", "canal", "candidat", "canif", "canon", "cantal", "canton", "canular", "cap", "capes", "capet","capital", "capteur", "capuchon", "car", "caractère", "caractere", "caramèle", "caravane", "carburateur", "cardinal", "carillon", "cariste", "carnettiste", "carrelage", "carrosse", "carrousel", "cartel", "cartographe", "carton", "casting", "catalogue", "cauchemard", "caveau", "cedex", "centre", "centuple", "cercle", "cerf", "challenge", "champagne", "champignon", "changement", "capeau", "chaperon", "chariot", "chargeur", "charismatique", "château", "chateau", "chauffagiste", "chauffage", "chauffeur", "chemin", "chéquier", "chequier", "cheval", "chevalier", "chevet", "chewing-gum", "chewinggum", "chic", "chien", "chiffon", "chimiste", "chocolat", "chu", "cirque", "circuit", "cercle", "classeur", "clerc", "climat", "clocher", "clown", "club", "cocher", "coffre", "cognac", "coin", "colibri", "collaborateur", "collège", "college", "colonel", "coloriage", "comble", "commandant", "commando", "commandement", "commencement", "commerce", "commercant", "commerçant", "compas", "compte", "concept", "concert", "concierge", "concours", "congé", "conge", "corps", "correspondant", "corridor", "cours", "cousin", "cp", "cpa", "cpf", "crédit", "credit", "crosse", "cross", "crs", "cse", "dao", "dat", "dea", "débat", "debat", "décret", "decret", "désert", "desert", "design", "dess", "dessous", "dessus", "détail", "detail", "deug", "deust", "devis", "devoir", "dg", "dîner", "diner", "dj", "doigt", "dom", "domino", "don", "dossier", "doux", "dragon", "droit", "duo", "feu", "fichier", "flan", "fleuriste", "flocon", "fort", "franc", "frère", "frere", "gang", "garagiste", "garde", "génie", "genie", "genre", "golf", "golfe", "groupe", "jardin", "jeu","jeune", "jour", "journal", "juge", "jury", "jus", "karma", "kiosque", "label", "lac", "laboratoire", "lacet", "laitage", "langage", "lapin", "lecteur", "lingot", "littoral", "livre", "local", "logement", "logo", "lp", "lustre", "lundi", "magasin", "magnolia", "mais", "maïs", "maitre", "mandat", "manga", "manteau", "manuel", "marais", "marathon", "marchand", "marché", "membre", "mensuel", "hebdomadaire", "métro", "metro", "meuble", "ministère", "ministere", "modèle", "modele", "module", "mof", "monde", "mooc", "mot", "muscle", "nerf", "neveu", "nez", "nid", "niveau", "nomade", "nord", "paf", "panier", "papier", "papillon", "paquet", "paramètre", "parametre", "parc", "parcours", "parlement", "parquet", "parti", "passage", "pc", "pdf", "pcv", "père", "pere", "permis", "peuple", "phare", "pilote", "plan", "pôle", "port", "pont", "portfolio", "post", "principe", "principal", "profil", "programme", "projet", "propos", "quotidien", "rappel", "rapport", "rayon", "rep", "repos", "résidence", "residence", "résolution", "resolution", "resto", "restaurant", "rice", "roman", "rse", "rsa", "sac", "saint", "samu", "saut", "sav", "script", "scribe", "secret", "secours", "sel", "service", "seuil", "signe", "soin", "sort", "sourire", "soutien", "spam", "spectre", "stade", "stick", "suv", "tableau", "talon", "temps", "tissu", "tir", "tombeau", "trait", "traité", "traite", "traiteur", "trader", "transfert", "travail", "tribunal", "triomphe", "troc", "trou", "valet", "vase", "vélo", "velo", "vent", "vin", "wagon", "web"]
+determinant_de_la = ['mission', "création", "creation", "brasserie", "fondation", "maif", "galerie", "matmut", "région", "region", "monnaie","maison", "companie", "cci", "fiduciaire", "compagnie", "caisse", "protection", "chambre", "commune", "place", "sncf", "banque", "fédération", "federation", "cheminée", "cheminee", "balance", "balise", "balise", "banane", "banderolle", "bande", "bannière", "banniere", "banque", "barre", "bibliothèque", "bijouterie", "borne", "buanderie", "cabine", "cacahouète", "cacahouete", "cachette", "cachotterie", "cadence", "caf", "caféine", "cafeine", "cafétériat", "cafeteria", "cafetière", "cafetiere", "cage", "cagnotte", "cagoule", "caille", "caissette", "caisse", "caissière", "caissiere", "calculette", "calculatrice", "cale", "caline", "câline", "câlinerie", "calinerie", "calligraphie", "calotte", "calvitie", "camaraderie", "cambuse", "campagne", "candidate", "cantine", "CAO", "capacité", "capacite", "cape", "capitale", "capsule", "carafe", "carapace", "carcasse", "caricature", "carotte", "cartoucherie", "cascade", "caserne", "casquette", "casserole", "caste", "catégorie", "categorie", "cavalerie", "caverne", "cave", "ceinture", "ceinturon", "célébration", "celebration", "célèbre", "celebre", "cellule", "centaine", "centrale", "centrifuge", "certification", "cfao", "chaîne", "chaine", "chaise", "chambre", "chanson", "chapelle", "charge", "chasse", "chaudière", "chaudiere", "chaussée", "chaussee", "chemise", "chevelure", "chope", "ville", "mairie", "citadine", "citadelle", "cité", "cite", "classe", "clairière", "clairiere", "classe", "classification", "clause", "clinique", "clique", "cloche", "clôture", "cloture", "collection", "coiffure", "colline", "colonie", "colonne", "coloration", "com", "combinaison", "commande", "commedia", "communauté", "communaute", "commune", "communication", "compétition", "competition", "compote", "concurrence", "concentration", "convention", "corde", "correspondante", "correspondance", "cote", "couche", "couleur", "coupe", "cousine", "coutellerie", "cravate", "crème", "creme", "csg", "csp", "cuisine", "culture", "dame", "décharge", "decharge", "déclaration", "declaration", "dérive", "derive", "descente", "dgse", "dgsi", "diaspora", "dictée", "dictee", "diction", "dictionnaire", "diction", "discussion", "dissertation", "distribution", "famille", "fée", "fee", "femme", "ferme", "feuille", "fiche", "figure", "flamme", "fleur", "flotte", "fondue", "forge", "foule", "fourrure", "fraternté", "fraternite", "fruitière", "fruitiere", "galerie", "garantie", "garde-robe", "garderobe", "greffe", "grenouille", "jetée", "jetee", "justice", "lecture", "légende", "legende", "lettre", "libération", "liberation", "ligne", "limite", "lingerie", "loge", "loi", "lumière", "lumiere", "lutte", "machine", "magazine", "main", "marche", "marine", "marque", "mégapole", "mégalopole", "mémoire", "memoire", "mine", "mise", "mode", "monnaie", "nageoire", "nature", "neige", "niche", "noblesse", "nomenclature", "note", "page", "paire", "pancarte", "panoplie", "pao", "papeterie", "parabole", "parade", "parole", "part", "partie", "patte", "peche", "pêche", "perspective", "pièce", "piece", "piste", "place", "plateforme", "plate-forme", "porte", "pratique", "pratique", "présentation", "presentation", "presse", "preuve", "primaire", "principale", "prise", "profession", "province", "question", "queue", "recherche", "région", "region", "reprise", "réussite", "rfid", "rgpd", "roue", "route", "rue", "salade", "salle", "santé", "série", "sirène", "sirene", "société", "societe", "station", "structure", "suite", "supérette", "superette", "surface", "table", "tablée", "tablee", "tapisserie", "tête", "tete", "thèse", "these", "tirelire", "toile", "tournée", "tournee", "tranche", "transaction", "troupe", "tutoriel", "valeur", "valise", "vérité", "verite", "vérification", "verification", "vertu", "voile", "voie", "voix", "vpc", "zif", "zone"]
 determinant_des = [mot + 's' for mot in determinant_de_l + determinant_du + determinant_de_la] + \
                   [mot + 'x' for mot in determinant_de_l + determinant_du + determinant_de_la] + ["travaux", ""]
 
@@ -49,12 +49,76 @@ determinant_des = [mot + 's' for mot in determinant_de_l + determinant_du + dete
 
 company_name = determinant_des + determinant_de_la + determinant_de_l + determinant_du
 
+# def segment_text(text, word_lists):
+
+#     # Création du dictionnaire unique des mots connus (en minuscule pour normaliser)
+#     word_set = set()
+#     for word_list in word_lists:
+#         word_set.update(w.lower() for w in word_list)
+
+#     text = text.lower()
+#     result = []
+#     i = 0
+#     while i < len(text):
+#         match = None
+#         # On teste tous les mots possibles en partant du plus long
+#         for j in range(len(text), i, -1):
+#             candidate = text[i:j]
+#             if candidate in word_set:
+#                 match = candidate
+#                 break
+#         if match:
+#             result.append(match)
+#             i += len(match)
+#         else:
+#             # Si aucun mot trouvé : ignorer un caractère et avancer
+#             i += 1  # ou: result.append(text[i]); i += 1 pour le conserver
+
+#     return result
+
+
 def normalize_col(name):
     # Remove accents and special characters
     name = unicodedata.normalize('NFKD', str(name))
     name = name.encode('ASCII', 'ignore').decode('utf-8')
     # Standardize to lowercase with underscores
     return name.strip().lower().replace(' ', '_')
+
+def decompose_string(input_string, word_list):
+    if not word_list:
+        return input_string
+    
+    word_set = set(word_list)
+    max_len = max(len(word) for word in word_set)
+    result = []
+    unknown_buf = ""
+    i = 0
+    n = len(input_string)
+    
+    while i < n:
+        found_word = None
+        start = min(n - i, max_len)
+        
+        for length in range(start, 0, -1):
+            candidate = input_string[i:i + length]
+            if candidate in word_set:
+                found_word = candidate
+                break
+        
+        if found_word:
+            if unknown_buf:
+                result.append(unknown_buf)
+                unknown_buf = ""
+            result.append(found_word)
+            i += len(found_word)
+        else:
+            unknown_buf += input_string[i]
+            i += 1
+    
+    if unknown_buf:
+        result.append(unknown_buf)
+    
+    return " ".join(result)
 
 # Fonction pour vérifier si un mot appartient à une des listes de déterminants
 def is_in_determinant_lists(word, determinant_de_l, determinant_du, determinant_de_la):
@@ -81,31 +145,49 @@ def remove_twopoints_and_following(text):
 # Fonction pour supprimer les termes de dénomination sociale dans un texte
 def remove_enterprise_term(text):
     if isinstance(text, str):
+        # Variantes de formes sociales, avec ou sans points/espaces
         denominations = [
-            r'\bInc\b', r'\bSAS\b', r'\bSARL\b', r'\bLtd\b', r'\bLLC\b', r'\bCorp\b', r'\bGmbH\b', r'\bCo\b', r'\bPty\b', r'\bAG\b', r'\bFreelance\b'
+            r'\bInc\.?\b',
+            r'\bSAS\b', r'\bS\.?\s*A\.?\s*S\.?\b',
+            r'\bSARL\b', r'\bS\.?\s*A\.?\s*R\.?\s*L\.?\b',
+            r'\bSA\b', r'\bS\.?\s*A\.?\b',
+            r'\bLtd\.?\b',
+            r'\bLLC\b',
+            r'\bCorp\.?\b',
+            r'\bGmbH\b',
+            r'\bCo\.?\b',
+            r'\bPty\.?\b',
+            r'\bAG\b',
+            r'\bFreelance\b'
         ]
+        
         pattern = '|'.join(denominations)
-        cleaned_text = re.sub(pattern, '', text)
+        
+        cleaned_text = re.sub(pattern, '', text, flags=re.IGNORECASE)
+        
         cleaned_text = re.sub(r'\s+', ' ', cleaned_text).strip()
-    
         return cleaned_text
     else:
         return text
 
-# Fonction pour supprimer le tiret et tout ce qui suit dans un texte
+
 def remove_hyphen_and_following(text):
     if isinstance(text, str):
         return text.split('- ')[0]
     else:
         return text
-
-# Fonction pour supprimer le pipe et tout ce qui suit dans un texte
+    
 def remove_pipe_and_following(text):
     if isinstance(text, str):
         return text.split('|')[0]
     else:
         return text
 
+def remove_dot(text):
+    if isinstance(text, str):
+        return text.split('.')[0]
+    else:
+        return text
 
 # Fonction pour insérer un espace dans un texte après un nom d'entreprise reconnu
 def create_space_in_societe(text, company_names):
@@ -124,7 +206,6 @@ def create_space_in_societe(text, company_names):
                 
     return text
 
-# Fonction pour détecter le type du premier mot dans une phrase (déterminant, nom propre, nom commun, autre)
 def detect_first_word_type(sentence):
     doc = nlp(sentence)
     first_token = doc[0]
@@ -137,6 +218,12 @@ def detect_first_word_type(sentence):
             return "nom_commun"
     else:
         return "autre"
+
+def remove_non_latin_characters(text):
+    if isinstance(text, str):
+        return re.sub(r'[^\u0000-\u00FF]', '', text)
+    else:
+        return text
 
 # Fonction pour supprimer les parenthèses et leur contenu dans un texte
 def remove_parentheses(text):
@@ -295,7 +382,12 @@ def process_csv():
                 determinant = "de la"        # Règles spécifiques pour certaines entreprises
             elif detect_first_word_type(nom_entreprise) == "nom_commun":
                 if is_commom_noun_starting_with_vowel(nom_entreprise):
+                    print("Nom commun commençant par une voyelle détecté :", nom_entreprise)
                     determinant = "d'"
+                    if (nom_entreprise.strip() == "Total"):
+                        print("Total détecté, utilisation de 'chez'")
+                        prefixe = "chez"
+                        determinant = ""
                 else:
                     determinant = "de"
             elif detect_first_word_type(nom_entreprise) == "determinant":
@@ -401,22 +493,41 @@ def process_csv():
             # Parcourt chaque ligne du DataFrame
             for index, row in df.iterrows():
                 # Si la colonne 'nom' n'est pas vide et ne contient pas de point, ajoute la valeur à 'Suggestion de Prénom'
-                if (not pd.isnull(row['nom'])) and '.' not in str(row['nom']):
-                    df.at[index, 'Suggestion de Prénom'] = row['nom']
+                nom_val = row.get('lastname')
+                print("La valeur du nom est")
+                print(nom_val)
+                if isinstance(nom_val, str) and (re.match(r'^\w\.$', nom_val.strip()) or re.match(r'^\w\;$', nom_val.strip())):
+                    print(nom_val)
+                    df.at[index, 'lastname'] = ''
+                elif isinstance(nom_val, str) and nom_val:
+                    # Set the first letter to a capital letter
+                    df.at[index, 'lastname'] = nom_val[0].upper() + nom_val[1:] if len(nom_val) > 1 else nom_val.upper()
                 
                 # Si la colonne 'societe' est une chaîne de caractères
-                if isinstance(row['societe'], str):
-                        # Supprime les parenthèses et leur contenu de 'societe'
-                        row_societe_cleaned = remove_parentheses(row['societe'])
-                        # Détermine le préfixe et le déterminant
-                        prefix, determinant = determiner_prefixe_pronom(row_societe_cleaned)
-                        
-                        # Met à jour le DataFrame avec la valeur nettoyée et traitée de 'societe'
-                        df.at[index, 'societe'] = f"{row_societe_cleaned}"
-                        if isinstance(row['chez'], str):
-                            prefix, determinant = determiner_prefixe_pronom(row_societe_cleaned)
-                            df.at[index, 'chez'] = f"{prefix} {determinant} "
-                
+                societe_val = row.get('societe', '')
+                if pd.notna(societe_val):
+                    cleaned_societe = remove_parentheses(societe_val)
+                    cleaned_societe = remove_hyphen_and_following(cleaned_societe)
+                    cleaned_societe = remove_pipe_and_following(cleaned_societe)
+                    cleaned_societe = remove_twopoints_and_following(cleaned_societe)
+                    cleaned_societe = remove_comma_and_following(cleaned_societe)
+                    cleaned_societe = remove_enterprise_term(cleaned_societe)
+                    cleaned_societe = remove_non_latin_characters(cleaned_societe)
+                    cleaned_societe = remove_dot(cleaned_societe)
+
+                    # cleaned_societe = decompose_string(cleaned_societe, company_name)
+                    df.at[index, 'societe'] = cleaned_societe.strip()
+                else:
+                    cleaned_societe = ''
+
+                prefix, determinant = determiner_prefixe_pronom(cleaned_societe)
+
+                if determinant and not determinant.endswith("'"):
+                    chez_string = f"{prefix} {determinant} "
+                else:
+                    chez_string = f"{prefix} {determinant}"
+                df.at[index, 'chez'] = chez_string
+
                 # Si la colonne 'firstName' est vide
                 if pd.isnull(row['firstname']):
                     if total_rows / count_monsieur >= 0.5:
@@ -427,7 +538,9 @@ def process_csv():
                 elif pd.isnull(row['civilite']):
                     first_names = row['firstname'].split()
                     first_name = first_names[0]
+                    print(first_name);
                     gender = detect_gender(first_name)
+                    print(gender)
                     if gender in ["andy", "unknown", "error"]:
                         if len(first_names) > 1:
                             second_name = first_names[1]
@@ -435,6 +548,7 @@ def process_csv():
                     if gender == "female" or gender == "mostly_female":
                         df.at[index, 'civilite'] = "Madame"
                     elif gender == "male" or gender=="mostly_male":
+                        print("Setting male to Monsieur")
                         df.at[index, 'civilite'] = "Monsieur"
                     elif gender == "andy":
                         if total_rows / count_monsieur >= 0.5:
@@ -457,6 +571,8 @@ def process_csv():
                         first_names = row['firstname'].split()
                         first_name = first_names[0]
                         gender = detect_gender(first_name)
+                        print(first_name)
+                        print(gender)
                         if gender in ["andy", "unknown", "error"]:
                             if len(first_names) > 1:
                                 second_name = first_names[1]
@@ -489,6 +605,35 @@ def process_csv():
                         df.at[index, 'Match Entreprise'] = 'Non'
                 # Met à jour la barre de progression
                 pbar_load.update(1)
+        print("\nLancement du nettoyage final de la colonne 'civilite'...")
+
+    # 1. Standardiser les remplacements directs
+    # Convertir la colonne en chaîne de caractères et en minuscules pour une comparaison fiable
+    civilite_lower = df['civilite'].astype(str).str.strip().str.lower()
+
+    # Remplacer les variantes masculines
+    df.loc[civilite_lower.isin(['male', 'mostly_male', 'mr', 'mister', 'm']), 'civilite'] = 'Monsieur'
+
+    # Remplacer les variantes féminines
+    df.loc[civilite_lower.isin(['female', 'mostly_female', 'mme', 'ms', 'mrs', 'miss', 'f']), 'civilite'] = 'Madame'
+
+
+    # 2. Gérer les valeurs inconnues ou ambiguës restantes
+    # Compter le nombre de 'Monsieur' et 'Madame'
+    monsieur_count = (df['civilite'] == 'Monsieur').sum()
+    madame_count = (df['civilite'] == 'Madame').sum()
+
+    # Déterminer le genre majoritaire (par défaut 'Monsieur' en cas d'égalité)
+    majority_gender = 'Monsieur' if monsieur_count >= madame_count else 'Madame'
+    print(f"Genre majoritaire détecté : {majority_gender} ({monsieur_count} H / {madame_count} F)")
+
+    # Identifier toutes les lignes qui ne sont ni 'Monsieur' ni 'Madame'
+    # Celles-ci incluent 'unknown', 'andy', 'nan', les chaînes vides, etc.
+    rows_to_update = ~df['civilite'].isin(['Monsieur', 'Madame'])
+    df.loc[rows_to_update, 'civilite'] = majority_gender
+
+    print("Nettoyage final de la colonne 'civilite' terminé.")
+
 
     # df_combined = pd.concat([df, df_null_email], ignore_index=True)
 
